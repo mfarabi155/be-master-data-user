@@ -19,7 +19,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'user_fullname' => 'required|string|max:255',
             'user_email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
@@ -44,7 +44,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'user_fullname' => 'string|max:255',
             'user_email' => 'string|email|max:255|unique:users,user_email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8',
         ]);
 
         $user->update([

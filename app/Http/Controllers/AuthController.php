@@ -45,23 +45,20 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $token = JWTAuth::getToken();
+    
         try {
-            // Mendapatkan token dari header Authorization
-            $token = JWTAuth::getToken();
-            
-            // Menginvalidate token
+            $user = JWTAuth::toUser($token);
+    
+            $user->update(['user_status' => false]);
+    
             JWTAuth::invalidate($token);
-            
-            return response()->json(['message' => 'Successfully logged out'], 200);
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['error' => 'Invalid token'], 400);
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['error' => 'Token expired'], 400);
+    
+            return response()->json(['message' => 'Successfully logged out', 'user' => $user], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred'], 400);
+            return response()->json(['message' => 'Token is invalid or expired'], 400);
         }
     }
-    
 
     /**
      * Mendapatkan Data Pengguna yang sedang login
